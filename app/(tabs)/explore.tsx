@@ -1,112 +1,240 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { LinearGradient } from "expo-linear-gradient";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
+import { ThemedText } from "@/components/themed-text";
 
-export default function TabTwoScreen() {
+export default function MenuScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText
-          type="title"
-          style={{
-            fontFamily: Fonts.rounded,
-          }}>
-          Explore
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <LinearGradient colors={["#E23744", "#CB202D"]} style={styles.header}>
+        <ThemedText style={styles.headerTitle}>Our Menu</ThemedText>
+        <ThemedText style={styles.headerSubtitle}>
+          Fresh • Premium • Kashmir
         </ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+      </LinearGradient>
+
+      <View style={styles.content}>
+        {/* Menu Categories */}
+        <View style={styles.categoriesSection}>
+          <TouchableOpacity style={styles.menuCard}>
+            <View style={styles.menuCardHeader}>
+              <View style={styles.menuIconContainer}>
+                <ThemedText style={styles.menuIcon}>🥩</ThemedText>
+              </View>
+              <View style={styles.menuCardInfo}>
+                <ThemedText style={styles.menuTitle}>Fresh Mutton</ThemedText>
+                <ThemedText style={styles.menuSubtitle}>
+                  Premium cuts from Kashmir farms
+                </ThemedText>
+                <View style={styles.menuStats}>
+                  <ThemedText style={styles.menuRating}>4.8⭐</ThemedText>
+                  <ThemedText style={styles.menuDelivery}>• 30 mins</ThemedText>
+                </View>
+              </View>
+            </View>
+            <View style={styles.menuBadge}>
+              <ThemedText style={styles.menuBadgeText}>Most Popular</ThemedText>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuCard}>
+            <View style={styles.menuCardHeader}>
+              <View style={styles.menuIconContainer}>
+                <ThemedText style={styles.menuIcon}>🐔</ThemedText>
+              </View>
+              <View style={styles.menuCardInfo}>
+                <ThemedText style={styles.menuTitle}>Farm Chicken</ThemedText>
+                <ThemedText style={styles.menuSubtitle}>
+                  Organic, free-range chicken
+                </ThemedText>
+                <View style={styles.menuStats}>
+                  <ThemedText style={styles.menuRating}>4.7⭐</ThemedText>
+                  <ThemedText style={styles.menuDelivery}>• 25 mins</ThemedText>
+                </View>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuCard}>
+            <View style={styles.menuCardHeader}>
+              <View style={styles.menuIconContainer}>
+                <ThemedText style={styles.menuIcon}>🐄</ThemedText>
+              </View>
+              <View style={styles.menuCardInfo}>
+                <ThemedText style={styles.menuTitle}>Fresh Beef</ThemedText>
+                <ThemedText style={styles.menuSubtitle}>
+                  High-quality beef cuts
+                </ThemedText>
+                <View style={styles.menuStats}>
+                  <ThemedText style={styles.menuRating}>4.9⭐</ThemedText>
+                  <ThemedText style={styles.menuDelivery}>• 35 mins</ThemedText>
+                </View>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuCard}>
+            <View style={styles.menuCardHeader}>
+              <View style={styles.menuIconContainer}>
+                <ThemedText style={styles.menuIcon}>🐟</ThemedText>
+              </View>
+              <View style={styles.menuCardInfo}>
+                <ThemedText style={styles.menuTitle}>Fresh Fish</ThemedText>
+                <ThemedText style={styles.menuSubtitle}>
+                  Daily fresh catch from Kashmir waters
+                </ThemedText>
+                <View style={styles.menuStats}>
+                  <ThemedText style={styles.menuRating}>4.6⭐</ThemedText>
+                  <ThemedText style={styles.menuDelivery}>• 40 mins</ThemedText>
+                </View>
+              </View>
+            </View>
+            <View style={styles.menuBadge}>
+              <ThemedText style={styles.menuBadgeText}>New</ThemedText>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {/* Coming Soon Banner */}
+        <View style={styles.comingSoonBanner}>
+          <ThemedText style={styles.comingSoonIcon}>🚀</ThemedText>
+          <ThemedText style={styles.comingSoonTitle}>
+            Full Menu Coming Soon!
+          </ThemedText>
+          <ThemedText style={styles.comingSoonText}>
+            We&apos;re preparing detailed product listings with prices, cuts,
+            and ordering options.
+          </ThemedText>
+        </View>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  container: {
+    flex: 1,
+    backgroundColor: "#f8f9fa",
   },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
+  header: {
+    paddingTop: 50,
+    paddingBottom: 30,
+    paddingHorizontal: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#fff",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  headerSubtitle: {
+    fontSize: 16,
+    color: "rgba(255, 255, 255, 0.9)",
+    textAlign: "center",
+    fontWeight: "500",
+  },
+  content: {
+    padding: 20,
+  },
+  categoriesSection: {
+    gap: 16,
+  },
+  menuCard: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 16,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    position: "relative",
+  },
+  menuCardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  menuIconContainer: {
+    width: 60,
+    height: 60,
+    backgroundColor: "#fff5f5",
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 16,
+  },
+  menuIcon: {
+    fontSize: 28,
+  },
+  menuCardInfo: {
+    flex: 1,
+  },
+  menuTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 4,
+  },
+  menuSubtitle: {
+    fontSize: 14,
+    color: "#666",
+    marginBottom: 8,
+    lineHeight: 18,
+  },
+  menuStats: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  menuRating: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#E23744",
+  },
+  menuDelivery: {
+    fontSize: 14,
+    color: "#666",
+    marginLeft: 4,
+  },
+  menuBadge: {
+    position: "absolute",
+    top: 12,
+    right: 12,
+    backgroundColor: "#E23744",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  menuBadgeText: {
+    fontSize: 12,
+    color: "#fff",
+    fontWeight: "600",
+  },
+  comingSoonBanner: {
+    backgroundColor: "#fff3cd",
+    marginTop: 30,
+    padding: 20,
+    borderRadius: 12,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ffeaa7",
+  },
+  comingSoonIcon: {
+    fontSize: 32,
+    marginBottom: 12,
+  },
+  comingSoonTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#856404",
+    marginBottom: 8,
+  },
+  comingSoonText: {
+    fontSize: 14,
+    color: "#856404",
+    textAlign: "center",
+    lineHeight: 20,
   },
 });
