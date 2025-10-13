@@ -1,9 +1,107 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
+import { useCart } from "@/contexts/CartContext";
+
+// Sample products data
+const products = [
+  {
+    id: "1",
+    name: "Premium Mutton Curry Cut",
+    price: 650,
+    category: "Fresh Mutton",
+    description: "Tender curry cuts from Kashmir farms",
+    weight: "1 kg",
+    emoji: "🥩",
+    rating: "4.8⭐",
+    deliveryTime: "30 mins",
+    badge: "Most Popular",
+  },
+  {
+    id: "2",
+    name: "Farm Chicken Whole",
+    price: 320,
+    category: "Farm Chicken",
+    description: "Organic, free-range chicken",
+    weight: "1.2 kg",
+    emoji: "🐔",
+    rating: "4.7⭐",
+    deliveryTime: "25 mins",
+  },
+  {
+    id: "3",
+    name: "Fresh Beef Steak Cut",
+    price: 580,
+    category: "Fresh Beef",
+    description: "High-quality beef for grilling",
+    weight: "500g",
+    emoji: "🐄",
+    rating: "4.9⭐",
+    deliveryTime: "35 mins",
+  },
+  {
+    id: "4",
+    name: "Fresh Trout Fish",
+    price: 480,
+    category: "Fresh Fish",
+    description: "Fresh catch from Kashmir waters",
+    weight: "800g",
+    emoji: "🐟",
+    rating: "4.6⭐",
+    deliveryTime: "40 mins",
+    badge: "New",
+  },
+  {
+    id: "5",
+    name: "Mutton Biryani Cut",
+    price: 720,
+    category: "Fresh Mutton",
+    description: "Perfect cuts for biryani",
+    weight: "1 kg",
+    emoji: "🥩",
+    rating: "4.8⭐",
+    deliveryTime: "30 mins",
+  },
+  {
+    id: "6",
+    name: "Chicken Leg Pieces",
+    price: 280,
+    category: "Farm Chicken",
+    description: "Fresh chicken leg pieces",
+    weight: "1 kg",
+    emoji: "🐔",
+    rating: "4.7⭐",
+    deliveryTime: "25 mins",
+  },
+];
 
 export default function MenuScreen() {
+  const { addItem } = useCart();
+
+  const handleAddToCart = (product: (typeof products)[0]) => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      category: product.category,
+      description: product.description,
+      weight: product.weight,
+    });
+
+    Alert.alert(
+      "Added to Cart!",
+      `${product.name} has been added to your cart.`,
+      [{ text: "OK" }]
+    );
+  };
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <LinearGradient colors={["#E23744", "#CB202D"]} style={styles.header}>
@@ -14,96 +112,71 @@ export default function MenuScreen() {
       </LinearGradient>
 
       <View style={styles.content}>
-        {/* Menu Categories */}
-        <View style={styles.categoriesSection}>
-          <TouchableOpacity style={styles.menuCard}>
-            <View style={styles.menuCardHeader}>
-              <View style={styles.menuIconContainer}>
-                <ThemedText style={styles.menuIcon}>🥩</ThemedText>
-              </View>
-              <View style={styles.menuCardInfo}>
-                <ThemedText style={styles.menuTitle}>Fresh Mutton</ThemedText>
-                <ThemedText style={styles.menuSubtitle}>
-                  Premium cuts from Kashmir farms
-                </ThemedText>
-                <View style={styles.menuStats}>
-                  <ThemedText style={styles.menuRating}>4.8⭐</ThemedText>
-                  <ThemedText style={styles.menuDelivery}>• 30 mins</ThemedText>
+        {/* Products Grid */}
+        <View style={styles.productsSection}>
+          {products.map((product) => (
+            <View key={product.id} style={styles.productCard}>
+              {product.badge && (
+                <View style={styles.productBadge}>
+                  <ThemedText style={styles.productBadgeText}>
+                    {product.badge}
+                  </ThemedText>
                 </View>
-              </View>
-            </View>
-            <View style={styles.menuBadge}>
-              <ThemedText style={styles.menuBadgeText}>Most Popular</ThemedText>
-            </View>
-          </TouchableOpacity>
+              )}
 
-          <TouchableOpacity style={styles.menuCard}>
-            <View style={styles.menuCardHeader}>
-              <View style={styles.menuIconContainer}>
-                <ThemedText style={styles.menuIcon}>🐔</ThemedText>
-              </View>
-              <View style={styles.menuCardInfo}>
-                <ThemedText style={styles.menuTitle}>Farm Chicken</ThemedText>
-                <ThemedText style={styles.menuSubtitle}>
-                  Organic, free-range chicken
-                </ThemedText>
-                <View style={styles.menuStats}>
-                  <ThemedText style={styles.menuRating}>4.7⭐</ThemedText>
-                  <ThemedText style={styles.menuDelivery}>• 25 mins</ThemedText>
+              <View style={styles.productHeader}>
+                <View style={styles.productIconContainer}>
+                  <ThemedText style={styles.productIcon}>
+                    {product.emoji}
+                  </ThemedText>
+                </View>
+                <View style={styles.productInfo}>
+                  <ThemedText style={styles.productTitle}>
+                    {product.name}
+                  </ThemedText>
+                  <ThemedText style={styles.productCategory}>
+                    {product.category}
+                  </ThemedText>
+                  <ThemedText style={styles.productDescription}>
+                    {product.description}
+                  </ThemedText>
+                  <View style={styles.productMeta}>
+                    <ThemedText style={styles.productWeight}>
+                      {product.weight}
+                    </ThemedText>
+                    <ThemedText style={styles.productRating}>
+                      {product.rating}
+                    </ThemedText>
+                  </View>
+                  <View style={styles.productFooter}>
+                    <ThemedText style={styles.productPrice}>
+                      ₹{product.price}
+                    </ThemedText>
+                    <ThemedText style={styles.productDelivery}>
+                      • {product.deliveryTime}
+                    </ThemedText>
+                  </View>
                 </View>
               </View>
-            </View>
-          </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuCard}>
-            <View style={styles.menuCardHeader}>
-              <View style={styles.menuIconContainer}>
-                <ThemedText style={styles.menuIcon}>🐄</ThemedText>
-              </View>
-              <View style={styles.menuCardInfo}>
-                <ThemedText style={styles.menuTitle}>Fresh Beef</ThemedText>
-                <ThemedText style={styles.menuSubtitle}>
-                  High-quality beef cuts
+              <TouchableOpacity
+                style={styles.addToCartButton}
+                onPress={() => handleAddToCart(product)}
+              >
+                <ThemedText style={styles.addToCartButtonText}>
+                  Add to Cart
                 </ThemedText>
-                <View style={styles.menuStats}>
-                  <ThemedText style={styles.menuRating}>4.9⭐</ThemedText>
-                  <ThemedText style={styles.menuDelivery}>• 35 mins</ThemedText>
-                </View>
-              </View>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuCard}>
-            <View style={styles.menuCardHeader}>
-              <View style={styles.menuIconContainer}>
-                <ThemedText style={styles.menuIcon}>🐟</ThemedText>
-              </View>
-              <View style={styles.menuCardInfo}>
-                <ThemedText style={styles.menuTitle}>Fresh Fish</ThemedText>
-                <ThemedText style={styles.menuSubtitle}>
-                  Daily fresh catch from Kashmir waters
-                </ThemedText>
-                <View style={styles.menuStats}>
-                  <ThemedText style={styles.menuRating}>4.6⭐</ThemedText>
-                  <ThemedText style={styles.menuDelivery}>• 40 mins</ThemedText>
-                </View>
-              </View>
-            </View>
-            <View style={styles.menuBadge}>
-              <ThemedText style={styles.menuBadgeText}>New</ThemedText>
-            </View>
-          </TouchableOpacity>
+          ))}
         </View>
 
-        {/* Coming Soon Banner */}
-        <View style={styles.comingSoonBanner}>
-          <ThemedText style={styles.comingSoonIcon}>🚀</ThemedText>
-          <ThemedText style={styles.comingSoonTitle}>
-            Full Menu Coming Soon!
-          </ThemedText>
-          <ThemedText style={styles.comingSoonText}>
-            We&apos;re preparing detailed product listings with prices, cuts,
-            and ordering options.
+        {/* Info Banner */}
+        <View style={styles.infoBanner}>
+          <ThemedText style={styles.infoIcon}>🚚</ThemedText>
+          <ThemedText style={styles.infoTitle}>Free Delivery</ThemedText>
+          <ThemedText style={styles.infoText}>
+            Free delivery on orders above ₹500. Cold chain delivery guaranteed!
           </ThemedText>
         </View>
       </View>
@@ -139,10 +212,10 @@ const styles = StyleSheet.create({
   content: {
     padding: 20,
   },
-  categoriesSection: {
+  productsSection: {
     gap: 16,
   },
-  menuCard: {
+  productCard: {
     backgroundColor: "#fff",
     borderRadius: 12,
     padding: 16,
@@ -153,11 +226,27 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     position: "relative",
   },
-  menuCardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
+  productBadge: {
+    position: "absolute",
+    top: 12,
+    right: 12,
+    backgroundColor: "#E23744",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    zIndex: 1,
   },
-  menuIconContainer: {
+  productBadgeText: {
+    fontSize: 12,
+    color: "#fff",
+    fontWeight: "600",
+  },
+  productHeader: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 16,
+  },
+  productIconContainer: {
     width: 60,
     height: 60,
     backgroundColor: "#fff5f5",
@@ -166,74 +255,96 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 16,
   },
-  menuIcon: {
+  productIcon: {
     fontSize: 28,
   },
-  menuCardInfo: {
+  productInfo: {
     flex: 1,
   },
-  menuTitle: {
-    fontSize: 18,
+  productTitle: {
+    fontSize: 16,
     fontWeight: "600",
     color: "#333",
     marginBottom: 4,
   },
-  menuSubtitle: {
+  productCategory: {
+    fontSize: 12,
+    color: "#E23744",
+    fontWeight: "500",
+    marginBottom: 4,
+  },
+  productDescription: {
     fontSize: 14,
     color: "#666",
     marginBottom: 8,
     lineHeight: 18,
   },
-  menuStats: {
+  productMeta: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 8,
   },
-  menuRating: {
-    fontSize: 14,
+  productWeight: {
+    fontSize: 12,
+    color: "#666",
+    backgroundColor: "#f8f9fa",
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+    marginRight: 8,
+  },
+  productRating: {
+    fontSize: 12,
     fontWeight: "600",
     color: "#E23744",
   },
-  menuDelivery: {
-    fontSize: 14,
-    color: "#666",
-    marginLeft: 4,
+  productFooter: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
-  menuBadge: {
-    position: "absolute",
-    top: 12,
-    right: 12,
-    backgroundColor: "#E23744",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+  productPrice: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#E23744",
   },
-  menuBadgeText: {
+  productDelivery: {
     fontSize: 12,
+    color: "#666",
+  },
+  addToCartButton: {
+    backgroundColor: "#E23744",
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  addToCartButtonText: {
     color: "#fff",
+    fontSize: 16,
     fontWeight: "600",
   },
-  comingSoonBanner: {
-    backgroundColor: "#fff3cd",
+  infoBanner: {
+    backgroundColor: "#e8f5e8",
     marginTop: 30,
     padding: 20,
     borderRadius: 12,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#ffeaa7",
+    borderColor: "#c3e6c3",
   },
-  comingSoonIcon: {
+  infoIcon: {
     fontSize: 32,
     marginBottom: 12,
   },
-  comingSoonTitle: {
+  infoTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#856404",
+    color: "#2d5a2d",
     marginBottom: 8,
   },
-  comingSoonText: {
+  infoText: {
     fontSize: 14,
-    color: "#856404",
+    color: "#2d5a2d",
     textAlign: "center",
     lineHeight: 20,
   },

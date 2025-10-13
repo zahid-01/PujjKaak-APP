@@ -1,6 +1,7 @@
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -9,8 +10,59 @@ import {
 } from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
+import { useCart } from "@/contexts/CartContext";
+
+// Sample products for quick add
+const quickProducts = [
+  {
+    id: "quick-1",
+    name: "Premium Mutton Curry Cut",
+    price: 650,
+    category: "Fresh Mutton",
+    description: "Tender curry cuts from Kashmir farms",
+    weight: "1 kg",
+  },
+  {
+    id: "quick-2",
+    name: "Farm Chicken Whole",
+    price: 320,
+    category: "Farm Chicken",
+    description: "Organic, free-range chicken",
+    weight: "1.2 kg",
+  },
+  {
+    id: "quick-3",
+    name: "Fresh Beef Steak Cut",
+    price: 580,
+    category: "Fresh Beef",
+    description: "High-quality beef for grilling",
+    weight: "500g",
+  },
+  {
+    id: "quick-4",
+    name: "Fresh Trout Fish",
+    price: 480,
+    category: "Fresh Fish",
+    description: "Fresh catch from Kashmir waters",
+    weight: "800g",
+  },
+];
 
 export default function HomeScreen() {
+  const { addItem } = useCart();
+
+  const handleQuickAdd = (category: string) => {
+    const product = quickProducts.find((p) => p.category === category);
+    if (product) {
+      addItem(product);
+      Alert.alert(
+        "Added to Cart!",
+        `${product.name} has been added to your cart.`,
+        [{ text: "OK" }]
+      );
+    }
+  };
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header Section */}
@@ -74,36 +126,60 @@ export default function HomeScreen() {
       <View style={styles.sectionContainer}>
         <ThemedText style={styles.sectionTitle}>Our Categories</ThemedText>
         <View style={styles.categoriesGrid}>
-          <TouchableOpacity style={styles.categoryCard}>
+          <TouchableOpacity
+            style={styles.categoryCard}
+            onPress={() => handleQuickAdd("Fresh Mutton")}
+          >
             <View style={styles.categoryImageContainer}>
               <ThemedText style={styles.categoryEmoji}>🥩</ThemedText>
             </View>
             <ThemedText style={styles.categoryName}>Fresh Mutton</ThemedText>
             <ThemedText style={styles.categoryDesc}>Premium cuts</ThemedText>
+            <View style={styles.quickAddBadge}>
+              <ThemedText style={styles.quickAddText}>Quick Add</ThemedText>
+            </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.categoryCard}>
+          <TouchableOpacity
+            style={styles.categoryCard}
+            onPress={() => handleQuickAdd("Farm Chicken")}
+          >
             <View style={styles.categoryImageContainer}>
               <ThemedText style={styles.categoryEmoji}>🐔</ThemedText>
             </View>
             <ThemedText style={styles.categoryName}>Farm Chicken</ThemedText>
             <ThemedText style={styles.categoryDesc}>Free-range</ThemedText>
+            <View style={styles.quickAddBadge}>
+              <ThemedText style={styles.quickAddText}>Quick Add</ThemedText>
+            </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.categoryCard}>
+          <TouchableOpacity
+            style={styles.categoryCard}
+            onPress={() => handleQuickAdd("Fresh Beef")}
+          >
             <View style={styles.categoryImageContainer}>
               <ThemedText style={styles.categoryEmoji}>🐄</ThemedText>
             </View>
             <ThemedText style={styles.categoryName}>Fresh Beef</ThemedText>
             <ThemedText style={styles.categoryDesc}>High quality</ThemedText>
+            <View style={styles.quickAddBadge}>
+              <ThemedText style={styles.quickAddText}>Quick Add</ThemedText>
+            </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.categoryCard}>
+          <TouchableOpacity
+            style={styles.categoryCard}
+            onPress={() => handleQuickAdd("Fresh Fish")}
+          >
             <View style={styles.categoryImageContainer}>
               <ThemedText style={styles.categoryEmoji}>🐟</ThemedText>
             </View>
             <ThemedText style={styles.categoryName}>Fresh Fish</ThemedText>
             <ThemedText style={styles.categoryDesc}>Daily catch</ThemedText>
+            <View style={styles.quickAddBadge}>
+              <ThemedText style={styles.quickAddText}>Quick Add</ThemedText>
+            </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -306,6 +382,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+    position: "relative",
   },
   categoryImageContainer: {
     width: 60,
@@ -330,6 +407,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#666",
     textAlign: "center",
+  },
+  quickAddBadge: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    backgroundColor: "#E23744",
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+  },
+  quickAddText: {
+    fontSize: 10,
+    color: "#fff",
+    fontWeight: "600",
   },
   featuresList: {
     gap: 16,
