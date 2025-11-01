@@ -11,6 +11,9 @@ import {
 
 import { ThemedText } from "@/components/themed-text";
 import { useCart } from "@/contexts/CartContext";
+import { useEffect } from "react";
+import axios from "axios";
+import { BASE_URI } from "@/constants/baseUri";
 
 // Sample products for quick add
 const quickProducts = [
@@ -50,6 +53,12 @@ const quickProducts = [
 
 export default function HomeScreen() {
   const { addItem } = useCart();
+
+  useEffect(() => {
+    axios.get(`${BASE_URI}/categories`).then((res: any) => {
+      console.log(res.data);
+    });
+  }, []);
 
   const handleQuickAdd = (category: string) => {
     const product = quickProducts.find((p) => p.category === category);
