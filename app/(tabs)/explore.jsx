@@ -6,9 +6,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useRouter } from "expo-router";
 
 import { ThemedText } from "@/components/themed-text";
 import { useCart } from "@/contexts/CartContext";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 
 // Sample products data
 const products = [
@@ -84,8 +86,9 @@ const products = [
 
 export default function MenuScreen() {
   const { addItem } = useCart();
+  const router = useRouter();
 
-  const handleAddToCart = (product: (typeof products)[0]) => {
+  const handleAddToCart = (product) => {
     addItem({
       id: product.id,
       name: product.name,
@@ -105,10 +108,20 @@ export default function MenuScreen() {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <LinearGradient colors={["#E23744", "#CB202D"]} style={styles.header}>
-        <ThemedText style={styles.headerTitle}>Our Menu</ThemedText>
-        <ThemedText style={styles.headerSubtitle}>
-          Fresh • Premium • Kashmir
-        </ThemedText>
+        <View style={styles.headerTop}>
+          <View style={styles.headerContent}>
+            <ThemedText style={styles.headerTitle}>Our Menu</ThemedText>
+            <ThemedText style={styles.headerSubtitle}>
+              Fresh • Premium • Kashmir
+            </ThemedText>
+          </View>
+          <TouchableOpacity
+            style={styles.profileButton}
+            onPress={() => router.push("/profile")}
+          >
+            <IconSymbol name="person.circle.fill" size={28} color="#fff" />
+          </TouchableOpacity>
+        </View>
       </LinearGradient>
 
       <View style={styles.content}>
@@ -193,7 +206,14 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingBottom: 30,
     paddingHorizontal: 20,
-    justifyContent: "center",
+  },
+  headerTop: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerContent: {
+    flex: 1,
     alignItems: "center",
   },
   headerTitle: {
@@ -208,6 +228,9 @@ const styles = StyleSheet.create({
     color: "rgba(255, 255, 255, 0.9)",
     textAlign: "center",
     fontWeight: "500",
+  },
+  profileButton: {
+    padding: 4,
   },
   content: {
     padding: 20,

@@ -11,9 +11,11 @@ import {
 
 import { ThemedText } from "@/components/themed-text";
 import { useCart } from "@/contexts/CartContext";
-import { useEffect } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { BASE_URI } from "@/constants/baseUri";
+import axios from "axios";
+import { useRouter } from "expo-router";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 
 // Sample products for quick add
 const quickProducts = [
@@ -52,24 +54,52 @@ const quickProducts = [
 ];
 
 export default function HomeScreen() {
+  const router = useRouter();
   const { addItem } = useCart();
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Helper function to fix image URLs (replace localhost with actual IP)
+  const fixImageUrl = (url) => {
+    if (!url) return url;
+    // Extract base URL from BASE_URI (remove /api/v1)
+    const baseUrl = BASE_URI.replace("/api/v1", "");
+    // Replace localhost:5050 with the correct base URL
+    return url.replace("http://localhost:5050", baseUrl);
+  };
 
   useEffect(() => {
-    axios.get(`${BASE_URI}/categories`).then((res: any) => {
-      console.log(res.data);
-    });
+    axios
+      .get(`${BASE_URI}/categories`)
+      .then((res) => {
+        if (res.data.success && res.data.data && res.data.data.categories) {
+          // Fix image URLs for each category
+          const categoriesWithFixedUrls = res.data.data.categories.map(
+            (category) => ({
+              ...category,
+              photo: category.photo ? category.photo.map(fixImageUrl) : [],
+            })
+          );
+          setCategories(categoriesWithFixedUrls);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        setLoading(false);
+      });
   }, []);
 
-  const handleQuickAdd = (category: string) => {
-    const product = quickProducts.find((p) => p.category === category);
-    if (product) {
-      addItem(product);
-      Alert.alert(
-        "Added to Cart!",
-        `${product.name} has been added to your cart.`,
-        [{ text: "OK" }]
-      );
-    }
+  const getCategoryEmoji = (categoryName) => {
+    const name = categoryName.toLowerCase();
+    if (name.includes("mutton") || name.includes("lamb")) return "🥩";
+    if (name.includes("chicken")) return "🐔";
+    if (name.includes("beef")) return "🐄";
+    if (name.includes("fish")) return "🐟";
+    return "🍖";
+  };
+
+  const handleCategoryPress = (category) => {
+    router.push(`/category/${category.id}`);
   };
 
   return (
@@ -88,10 +118,18 @@ export default function HomeScreen() {
                 contentFit="contain"
               />
             </View>
-            <View style={styles.locationContainer}>
-              <ThemedText style={styles.locationText}>
-                📍 Srinagar, Kashmir
-              </ThemedText>
+            <View style={styles.headerRight}>
+              <View style={styles.locationContainer}>
+                <ThemedText style={styles.locationText}>
+                  📍 Srinagar, Kashmir
+                </ThemedText>
+              </View>
+              <TouchableOpacity
+                style={styles.profileButton}
+                onPress={() => router.push("/profile")}
+              >
+                <IconSymbol name="person.circle.fill" size={28} color="#fff" />
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -134,63 +172,53 @@ export default function HomeScreen() {
       {/* Categories Section */}
       <View style={styles.sectionContainer}>
         <ThemedText style={styles.sectionTitle}>Our Categories</ThemedText>
-        <View style={styles.categoriesGrid}>
-          <TouchableOpacity
-            style={styles.categoryCard}
-            onPress={() => handleQuickAdd("Fresh Mutton")}
-          >
-            <View style={styles.categoryImageContainer}>
-              <ThemedText style={styles.categoryEmoji}>🥩</ThemedText>
-            </View>
-            <ThemedText style={styles.categoryName}>Fresh Mutton</ThemedText>
-            <ThemedText style={styles.categoryDesc}>Premium cuts</ThemedText>
-            <View style={styles.quickAddBadge}>
-              <ThemedText style={styles.quickAddText}>Quick Add</ThemedText>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.categoryCard}
-            onPress={() => handleQuickAdd("Farm Chicken")}
-          >
-            <View style={styles.categoryImageContainer}>
-              <ThemedText style={styles.categoryEmoji}>🐔</ThemedText>
-            </View>
-            <ThemedText style={styles.categoryName}>Farm Chicken</ThemedText>
-            <ThemedText style={styles.categoryDesc}>Free-range</ThemedText>
-            <View style={styles.quickAddBadge}>
-              <ThemedText style={styles.quickAddText}>Quick Add</ThemedText>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.categoryCard}
-            onPress={() => handleQuickAdd("Fresh Beef")}
-          >
-            <View style={styles.categoryImageContainer}>
-              <ThemedText style={styles.categoryEmoji}>🐄</ThemedText>
-            </View>
-            <ThemedText style={styles.categoryName}>Fresh Beef</ThemedText>
-            <ThemedText style={styles.categoryDesc}>High quality</ThemedText>
-            <View style={styles.quickAddBadge}>
-              <ThemedText style={styles.quickAddText}>Quick Add</ThemedText>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.categoryCard}
-            onPress={() => handleQuickAdd("Fresh Fish")}
-          >
-            <View style={styles.categoryImageContainer}>
-              <ThemedText style={styles.categoryEmoji}>🐟</ThemedText>
-            </View>
-            <ThemedText style={styles.categoryName}>Fresh Fish</ThemedText>
-            <ThemedText style={styles.categoryDesc}>Daily catch</ThemedText>
-            <View style={styles.quickAddBadge}>
-              <ThemedText style={styles.quickAddText}>Quick Add</ThemedText>
-            </View>
-          </TouchableOpacity>
-        </View>
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ThemedText style={styles.loadingText}>
+              Loading categories...
+            </ThemedText>
+          </View>
+        ) : categories.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <ThemedText style={styles.emptyText}>
+              No categories available
+            </ThemedText>
+          </View>
+        ) : (
+          <View style={styles.categoriesGrid}>
+            {categories.map((category) => (
+              <TouchableOpacity
+                key={category.id}
+                style={styles.categoryCard}
+                onPress={() => handleCategoryPress(category)}
+              >
+                {category.photo &&
+                category.photo.length > 0 &&
+                category.photo[0] ? (
+                  <View style={styles.categoryImageContainer}>
+                    <Image
+                      source={{ uri: category.photo[0] }}
+                      style={styles.categoryImage}
+                      contentFit="cover"
+                    />
+                  </View>
+                ) : (
+                  <View style={styles.categoryImageContainer}>
+                    <ThemedText style={styles.categoryEmoji}>
+                      {getCategoryEmoji(category.categoryName)}
+                    </ThemedText>
+                  </View>
+                )}
+                <ThemedText style={styles.categoryName}>
+                  {category.categoryName}
+                </ThemedText>
+                <ThemedText style={styles.categoryDesc}>
+                  Browse products
+                </ThemedText>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
       </View>
 
       {/* Why Choose Us */}
@@ -290,6 +318,17 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 8,
   },
+  headerTop: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
   locationContainer: {
     alignItems: "flex-end",
   },
@@ -297,6 +336,9 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 14,
     fontWeight: "500",
+  },
+  profileButton: {
+    padding: 4,
   },
   searchContainer: {
     backgroundColor: "#fff",
@@ -401,6 +443,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 12,
+    overflow: "hidden",
+  },
+  categoryImage: {
+    width: "100%",
+    height: "100%",
   },
   categoryEmoji: {
     fontSize: 28,
@@ -416,6 +463,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#666",
     textAlign: "center",
+  },
+  loadingContainer: {
+    padding: 20,
+    alignItems: "center",
+  },
+  loadingText: {
+    fontSize: 14,
+    color: "#666",
+  },
+  emptyContainer: {
+    padding: 20,
+    alignItems: "center",
+  },
+  emptyText: {
+    fontSize: 14,
+    color: "#666",
   },
   quickAddBadge: {
     position: "absolute",

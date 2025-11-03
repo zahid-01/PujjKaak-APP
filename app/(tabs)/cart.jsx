@@ -1,6 +1,7 @@
 import { ThemedText } from "@/components/themed-text";
 import { useCart } from "@/contexts/CartContext";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
 import React from "react";
 import {
   Alert,
@@ -9,8 +10,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 
 export default function CartScreen() {
+  const router = useRouter();
   const {
     items,
     totalItems,
@@ -21,9 +24,9 @@ export default function CartScreen() {
   } = useCart();
 
   const handleUpdateQuantity = (
-    id: string,
-    currentQuantity: number,
-    change: number
+    id,
+    currentQuantity,
+    change
   ) => {
     const newQuantity = currentQuantity + change;
     if (newQuantity <= 0) {
@@ -63,10 +66,20 @@ export default function CartScreen() {
     return (
       <View style={styles.container}>
         <LinearGradient colors={["#E23744", "#CB202D"]} style={styles.header}>
-          <ThemedText style={styles.headerTitle}>Your Cart</ThemedText>
-          <ThemedText style={styles.headerSubtitle}>
-            {totalItems} items • ₹{totalPrice.toFixed(2)}
-          </ThemedText>
+          <View style={styles.headerTop}>
+            <View>
+              <ThemedText style={styles.headerTitle}>Your Cart</ThemedText>
+              <ThemedText style={styles.headerSubtitle}>
+                {totalItems} items • ₹{totalPrice.toFixed(2)}
+              </ThemedText>
+            </View>
+            <TouchableOpacity
+              style={styles.profileButton}
+              onPress={() => router.push("/profile")}
+            >
+              <IconSymbol name="person.circle.fill" size={28} color="#fff" />
+            </TouchableOpacity>
+          </View>
         </LinearGradient>
 
         <View style={styles.emptyContainer}>
@@ -83,10 +96,20 @@ export default function CartScreen() {
   return (
     <View style={styles.container}>
       <LinearGradient colors={["#E23744", "#CB202D"]} style={styles.header}>
-        <ThemedText style={styles.headerTitle}>Your Cart</ThemedText>
-        <ThemedText style={styles.headerSubtitle}>
-          {totalItems} items • ₹{totalPrice.toFixed(2)}
-        </ThemedText>
+        <View style={styles.headerTop}>
+          <View>
+            <ThemedText style={styles.headerTitle}>Your Cart</ThemedText>
+            <ThemedText style={styles.headerSubtitle}>
+              {totalItems} items • ₹{totalPrice.toFixed(2)}
+            </ThemedText>
+          </View>
+          <TouchableOpacity
+            style={styles.profileButton}
+            onPress={() => router.push("/profile")}
+          >
+            <IconSymbol name="person.circle.fill" size={28} color="#fff" />
+          </TouchableOpacity>
+        </View>
       </LinearGradient>
 
       <ScrollView style={styles.cartItems} showsVerticalScrollIndicator={false}>
@@ -195,6 +218,14 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingBottom: 20,
     paddingHorizontal: 20,
+  },
+  headerTop: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  profileButton: {
+    padding: 4,
   },
   headerTitle: {
     fontSize: 24,

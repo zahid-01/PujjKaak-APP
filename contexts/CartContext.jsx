@@ -1,25 +1,12 @@
-import { CartContextType, CartItem } from "@/types/cart";
-import React, { createContext, ReactNode, useContext, useReducer } from "react";
-
-// Cart Actions
-type CartAction =
-  | { type: "ADD_ITEM"; payload: Omit<CartItem, "quantity"> }
-  | { type: "REMOVE_ITEM"; payload: string }
-  | { type: "UPDATE_QUANTITY"; payload: { id: string; quantity: number } }
-  | { type: "CLEAR_CART" };
-
-// Cart State
-interface CartState {
-  items: CartItem[];
-}
+import React, { createContext, useContext, useReducer } from "react";
 
 // Initial State
-const initialState: CartState = {
+const initialState = {
   items: [],
 };
 
 // Cart Reducer
-function cartReducer(state: CartState, action: CartAction): CartState {
+function cartReducer(state, action) {
   switch (action.type) {
     case "ADD_ITEM":
       const existingItem = state.items.find(
@@ -71,10 +58,10 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 }
 
 // Create Context
-const CartContext = createContext<CartContextType | undefined>(undefined);
+const CartContext = createContext(undefined);
 
 // Cart Provider Component
-export function CartProvider({ children }: { children: ReactNode }) {
+export function CartProvider({ children }) {
   const [state, dispatch] = useReducer(cartReducer, initialState);
 
   const totalItems = state.items.reduce((sum, item) => sum + item.quantity, 0);
@@ -83,15 +70,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
     0
   );
 
-  const addItem = (item: Omit<CartItem, "quantity">) => {
+  const addItem = (item) => {
     dispatch({ type: "ADD_ITEM", payload: item });
   };
 
-  const removeItem = (id: string) => {
+  const removeItem = (id) => {
     dispatch({ type: "REMOVE_ITEM", payload: id });
   };
 
-  const updateQuantity = (id: string, quantity: number) => {
+  const updateQuantity = (id, quantity) => {
     dispatch({ type: "UPDATE_QUANTITY", payload: { id, quantity } });
   };
 
@@ -99,7 +86,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "CLEAR_CART" });
   };
 
-  const value: CartContextType = {
+  const value = {
     items: state.items,
     totalItems,
     totalPrice,
@@ -120,3 +107,4 @@ export function useCart() {
   }
   return context;
 }
+

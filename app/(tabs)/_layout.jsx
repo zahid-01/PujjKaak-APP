@@ -8,7 +8,7 @@ import { Colors } from "@/constants/theme";
 import { useCart } from "@/contexts/CartContext";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
-function CartIconWithBadge({ color }: { color: string }) {
+function CartIconWithBadge({ color }) {
   const { totalItems } = useCart();
 
   return (
